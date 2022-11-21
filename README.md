@@ -124,7 +124,7 @@ Changes to be committed:
         new file:   main.py
 ```
 
-Če želimo dodati vse, kar se dodati da (v našem primeru README.md in main.py), lagko uporabimo tudi `git add .`, ki doda vse spremenjene datoteke in datoteke, ki jih še nismo imeli v preteklosti.
+Če želimo dodati vse, kar se dodati da (v našem primeru README.md in main.py), lahko uporabimo tudi `git add .`, ki doda vse spremenjene datoteke in datoteke, ki jih še nismo imeli v preteklosti.
 
 Ko so datoteke dodane, jih lahko commitamo. To storimo tako, da poženemo ukaz `git commit`, ki odpre v terminalu urejevalnik, ki smo ga nastavili za privzetega in vanj lahko napišemo sporočilo commita. Za sporočilo lahko napišemo karkoli med 0 in 50 znakov, vendar je smiselno, da v sporočilu nakratko napišemo, kaj smo spremenili (to nam bo koristilo kasneje). Druga možnost je tudi, da napišemo `git commit -m "sporočilo"`, ki ustvari commit s sporočilom "sporočilo". Več napotkov glede commitov sledi kasneje. S tem smo ustvarili nov zabeležek v zgodovini.
 
@@ -138,7 +138,7 @@ $ git remote add origin git@github.com:<username>/<repository_name>.git
 $ git push -u origin main
 ```
 
-Prvi ukaz pravi, da nastavimo `remote`, ki ga poimenujemo `origin` in dodamo povezavo do našega repozitorija na githubu. Drugi ukaz pa "potisne" v `origin`, torej remote repozitorij, naš repozitorij.
+Prvi ukaz pravi, da nastavimo `remote`, ki ga poimenujemo `origin` in dodamo povezavo do našega repozitorija na githubu. Drugi ukaz pa "potisne" naš repozitorij v `origin`, torej remote repozitorij.
 
 Ko želimo delo nadaljevati na drugem računalniku prvič, moramo najprej repozitorij klonirati. To storimo z ukazom:
 
@@ -163,6 +163,14 @@ Kadar delamo v skupini z nekom drugim, želimo imeti nek "remote" repozitorij, k
 > TODO
 
 ### Veje v gitu
+
+Veje v gitu so v resnici pointerji na commite, zato so veje "poceni" (ne zasedejo dodatnega prostora). Veje uporabljamo, kadar želimo nekaj testirati in nismo prepričani, ali bo stvar delovala. Takrat ustvarimo svojo vejo, na njej ustvarjamo spremembe, jih commitamo, kot običajno, na koncu pa, če smo z delom zadovljni, lahko vejo združimo (merge) v našo glavno vejo, če pa z delom nismo zadovoljni, lahko vejo pobrišemo, ali pa pustimo pri miru, če bomo kdaj želeli na njej nadaljevati delo.
+
+Novo vejo ustvarimo tako, da poženemo `git branch <branch_name>`. To nam ustvari novo vejo, vendar nas ne preusmeri avtomatično na njo. Da se na novo vejo prestavimo, poženemo `git checkout <branch_name>`, ali pa `git switch <branch_name>`. Razlika med `switch` in `checkout` je, da pri prvem se git pritoži, če dobi npr. commit namesto imena veje, `checkout` pa gre lahko tudi na commit (kot smo videli že prej).
+
+Ko smo z delom na veji zadovoljni, lahko vejo priključimo naši main veji. To najlažje storimo tako, da gremo na vejo main in tam poženemo `git merge <branch_name>`, kjer je branch_name ime veje s katere želimo delo priključiti. Git pri tem ustvari `merge commit`, torej nov commit, ki ima dva starša, torej obe veji iz katerih smo delo združili. Ni nujno, da vedno združimo vejo na main. Veje lahko med sabo poljubno združujemo, iz vej lahko naredimo poljubno število vej.
+
+Več o tem, si lahko preberete v razdelku merge, rebase, cherry-pick.
 
 ### Napotki za commite
 
@@ -194,12 +202,45 @@ single space, with blank lines in between, but conventions vary here
 
 Dobra praksa je, da se commita čim več. V smislu, da se vsaj vsako zaključeno celoto commita posebej, saj to kasneje olajša delo za debuganje ali merganje.
 
-### git merge
-
-
+### merge
 
 ### rebase, cherry-pick
 
 ### Git v praksi
 
+## .gitignore
+
+Včasih želimo, da določenih datotek git ne bo sledil. V ta namen lahko ustvarimo datoteko z imenom `.gitignore`. V njej z nekoliko poenostavljenim regexom določimo obliko imena datotek, za katere želimo, da jim git ne sledi. V .gitignore naprimer navedemo tiste datoteke (ali mape), ki se naredijo same pri poganjanju projekta. Datoteko v terminalu ustvarimo z ukazom `touch .gitignore` in jo uredimo tako da poženemo `<editor_name> .gitignore`, vsebino izpišemo z ukazom `cat .gitignore`.
+
+Primer .gitignore:
+
+```
+# ignore all .a files
+*.a
+# but do track lib.a, even though you're ignoring .a files above
+!lib.a
+# only ignore the TODO file in the current directory, not subdir/TODO
+/TODO
+# ignore all files in any directory named build
+build/
+# ignore doc/notes.txt, but not doc/server/arch.txt
+doc/*.txt
+# ignore all .pdf files in the doc/ directory and any of its subdirectories
+doc/**/*.pdf
+```
+
+Na [povezavi](https://github.com/github/gitignore) so predloge za .gitignore datoteke glede na tip (programski jezik) projekta, na katerem delate. Lahko imamo .gitignore datoteke tudi v podmapah. Vsak .gitignore povozi vse .gitignore datoteke iz "višjih" map.
+
 ## Cheatsheet
+
+V tem razdelku se nahajajo najpogostejši ukazi, ki jih potrebujemo za git. Vse ukaze poženemo kot `git <command_name> -fl1 -fl2 -fl... --flag1 --flag2 --flag...`, kjer je `<command_name>` ime ukaza, `-fl#` je krajše ime za `--flag#`, ki predstavlja dodatne specifikacije za ukaz. Nekatere zastavice vzamejo tudi argumente, ki jih preprosto navedemo za imenom zastavice. Zastavice, ki so na voljo, lahko napišemo `git help <command>` in nam git izpiše vse kaj ukaz `command` zna.
+
+### Setup
+
+| Command |            Flag            |                                      Description                                      |                 Example                 |                      Additional                       |
+| :-----: | :------------------------: | :-----------------------------------------------------------------------------------: | :-------------------------------------: | :---------------------------------------------------: |
+|  init   |                            |                    trenuten direktorij spremeni v git repozitorij                     |                git init                 |                                                       |
+| config  |             -e             |            odpre config datoteko v kateri lahko nastavljamo spremenljivke             |              git config -e              |
+|         | --global `<var>` `<value>` |  globalno (za vse repozitorije) nastavi spremenljivko `<var>` na vrednost `<value>`   | git config --global user.name "rzgdmqt" | user.name, user.mail, core.editor init.defaultBranch  |
+|         | --local `<var>` `<value>`  | lokalno (za trenutni repozitorij) nastavi spremenljivko `<var>` na vrednost `<value>` | git config --local user.name "rzgdmqt"  | user.name, user.mail, core.editor, init.defaultBranch |
+|         |           --list           |          izpiše nastavitve za repozitorij (tako lokalne, kot tudi globalne)           |                                         |
