@@ -3,6 +3,7 @@ class Uporabnik:
         self.ime = ime
         self.mail = mail
         self.geslo = geslo
+        self.imena_gesla = {}
 
     def spremeni_geslo(self, geslo):
         return

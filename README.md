@@ -53,9 +53,9 @@ $ git config --global user.email "gasperzajdela@gmail.com"
 
 S tem smo nastavili uporabniško ime in mail globalno, in ga bo git uporabljal za vse git repozitorije. Če želimo nastaviti ime in mail samo za trenutni repozitorij, spustimo `--global`.
 
-> TODO pushanje
+Nato na githubu ustvarimo prazen repozitorij in sledimo navodilom, ki nam jih da github.
 
-2.) Druga možnost je, da repozitorij ustvarimo na Githubu in in ga nato kloniramo na mesto, kjer ga želimo imeti. Ko ustvarjamo repozitorij na Githubu, moramo vanj dodati vsaj eno datoteko (običajno README.md), ki nam jo Github že ponudi. Potem sledimo navodilom na Githubu.
+2.) Druga možnost je, da repozitorij ustvarimo na Githubu in ga nato kloniramo na mesto, kjer ga želimo imeti. Ko ustvarjamo repozitorij na Githubu, moramo vanj dodati vsaj eno datoteko (običajno README.md), ki nam jo Github že ponudi. Potem sledimo navodilom na Githubu.
 
 Naslednji korak je, da si nastavimo privzet urejevalnik besedila, ki ga bo git tudi uporabljal za izpisovanje in urejanje datotek. To storimo z ukazom
 
@@ -90,7 +90,7 @@ Osnovni gradniki gita so torej commiti, saj so commiti tisto, kar beleži zgodov
 
 Blob se v gitu imenujejo daoteke, ki jih imamo v repozitoriju. V vsakem commitu si git zapomni vse datoteke in si poračuna njihove hashe. Če se kaka datoteka ne spremeni, si zapomni hash datoteke iz prejšnjega commita.
 
-### Osnovno delo z gitom
+### Delo z gitom lokalno
 
 Najprej si poglejmo, kako z gitom delamo sami (torej brez kontributorjev). Ko smo ustvarili (ali klonirali) repozitorij, lahko v njem spreminjamo datoteke. Ko želimo spremembe zabeležiti v zgodovino, moramo ustvariti commit. Najprej pogledamo, kakšno je stanje našega repozitorija
 
@@ -129,16 +129,77 @@ Changes to be committed:
 Ko so datoteke dodane, jih lahko commitamo. To storimo tako, da poženemo ukaz `git commit`, ki odpre v terminalu urejevalnik, ki smo ga nastavili za privzetega in vanj lahko napišemo sporočilo commita. Za sporočilo lahko napišemo karkoli med 0 in 50 znakov, vendar je smiselno, da v sporočilu nakratko napišemo, kaj smo spremenili (to nam bo koristilo kasneje). Druga možnost je tudi, da napišemo `git commit -m "sporočilo"`, ki ustvari commit s sporočilom "sporočilo". Več napotkov glede commitov sledi kasneje. S tem smo ustvarili nov zabeležek v zgodovini.
 
 Kadar želimo pogledati v zgodovino, nam pri tem pomaga ukaz `git log`, ki nam pokaže celotno zgodovino commitov in za njih prikaže hash, avtorja, datum in sporočilo commita.
-če želimo pogledati, kako je naša koda zgledala v nekem commitu, rabimo kopirati nekaj prvih znakov hasha (več kot 8 in vsaj toliko, da nista 2 commita enaka v vseh prvih znakih). Potem poženemo `git checkout f4dce6b6`, ki nas prestavi v trenutek zgodovine, ko smo commitali f4dce6b6. Če se želimo vrniti nazaj v sedanjost, poženemo `git checkout -`
+če želimo pogledati, kako je naša koda zgledala v nekem commitu, rabimo kopirati nekaj prvih znakov hasha (več kot 8 in vsaj toliko, da nista 2 commita enaka v vseh prvih znakih). Potem poženemo `git checkout f4dce6b6`, ki nas prestavi v trenutek zgodovine, ko smo commitali f4dce6b6. Če se želimo vrniti nazaj v sedanjost, poženemo `git checkout -`, kar je isto kot `git checkout main`, ki v tem trenutku predstavlja sedanjost. če se želimo iz preteklosti preseliti v malo mlajšo zgodovino (naprimer za dva commita naprej), potrebujemo hash. Tokrat je problem, če poženemo `git log`, saj nam ta ukaz prikaže le commite v preteklosti od trenutka, kjer se nahajamo sedaj. Če pa želimo izpisati vse commite, ki so v preteklosti in v prihodnosti, poženemo `git log --all`. Več načinov kako prikazovati log, si lahko pogledate spodaj v tabeli.
 
-Kadar delamo v skupini z nekom drugim, želimo imeti nek "remote" repozitorij, kamor lahko vsi shranjujemo naše spremembe.
+Včasih želimo naše trenutno delo nadaljevati na drugem računalniku. V ta namen lahko naše lokalne spremembe shranimo na Github. To storimo tako na sledeč način:
 
-### Napotki za commite
+```
+$ git remote add origin git@github.com:<username>/<repository_name>.git
+$ git push -u origin main
+```
+
+Prvi ukaz pravi, da nastavimo `remote`, ki ga poimenujemo `origin` in dodamo povezavo do našega repozitorija na githubu. Drugi ukaz pa "potisne" v `origin`, torej remote repozitorij, naš repozitorij.
+
+Ko želimo delo nadaljevati na drugem računalniku prvič, moramo najprej repozitorij klonirati. To storimo z ukazom:
+
+```
+$ git clone git@github.com:<username>/<repository_name>.git
+```
+
+Ko delo končamo, je treba ponovno pognati push. Vsakič naslednjič, ko bomo želeli nadaljevati delo (na tem ali na starem računalniku), pa bo potrebno z githuba povlečti spremembe. To storimo z ukazom:
+
+```
+$ git pull origin
+```
+
+Po končanem delu, pa ne smemo pozabiti na push.
+
+_Opomba: Če želimo na drugem računalniku spreminjati kodo, moramo tudi na drugem računalniku nastaviti ssh ključ in ga dodati v github._
+
+### Delo z gitom v skupini
+
+Kadar delamo v skupini z nekom drugim, želimo imeti nek "remote" repozitorij, kamor lahko vsi shranjujemo svoje spremembe. To lahko storimo tako, da na Githubu ustvarimo repozitorij in vanj kot kontributorje dodamo ljudi, ki sodelujejo z nami na projektu. Tako lahko vsak klonira projekt in na njem ustvarja spremembe. Spremembe pa se dogajajo samo lokalno. Če jih želimo poslati na remote, poženemo
+
+> TODO
 
 ### Veje v gitu
 
+### Napotki za commite
+
+Kadar delamo v skupini, je še toliko bolj pomembno, da so sporočila commitov jasna in zgovorna. Kadar poženemo `git commit`, brez značke `-m`, se nam odpre urejevalnik, kamor lahko napišemo daljše sporočilo. Prva vrstica je kratek in jedrnat opis, po prazni vrstici pa lahko sledi daljše sporočilo. Primer template:
+
+```
+Capitalized, short (50 chars or less) summary
+
+More detailed explanatory text, if necessary. Wrap it to about 72
+characters or so. In some contexts, the first line is treated as the
+subject of an email and the rest of the text as the body. The blank
+line separating the summary from the body is critical (unless you omit
+the body entirely); tools like rebase will confuse you if you run the
+two together.
+
+Write your commit message in the imperative: "Fix bug" and not "Fixed bug"
+or "Fixes bug." This convention matches up with commit messages generated
+by commands like git merge and git revert.
+
+Further paragraphs come after blank lines.
+
+- Bullet points are okay, too
+
+- Typically a hyphen or asterisk is used for the bullet, followed by a
+single space, with blank lines in between, but conventions vary here
+
+- Use a hanging indent
+```
+
+Dobra praksa je, da se commita čim več. V smislu, da se vsaj vsako zaključeno celoto commita posebej, saj to kasneje olajša delo za debuganje ali merganje.
+
 ### git merge
+
+
 
 ### rebase, cherry-pick
 
 ### Git v praksi
+
+## Cheatsheet
