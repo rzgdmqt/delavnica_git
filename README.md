@@ -212,6 +212,45 @@ Dobra praksa je, da se commita čim več. V smislu, da se vsaj vsako zaključeno
 
 ### merge
 
+Včasih želimo združiti datoteke z različnih vej, ki se med sabo razhajajo. Takrat, če poženemo `git merge` dobimo konflikt, ki ga moramo razrešiti. Recimo, da imamo v repozitoriju datoteko `moje_besedilo.txt` z naslednjo vsebino:
+
+```
+Pozdravljen, svet!
+```
+To datoteko smo dodali v commit in ustvarili novo vejo ki izhaja iz tega commita. Na obeh vejah (main in veja1), smo to datoteko spreminjali, na koncu pa ju želimo združiti. Na veji veja1 besedilo izgleda tako:
+```
+Pozdravljen, svet!
+Kako lepo vreme je danes! Kot nalašč za učenje algebre. :)
+```
+Na veji main pa besedilo izgleda tako:
+```
+Pozdravljen, svet!
+Algebre pa res ne maram. :(
+Ok no, recimo da ni tok slaba ;)
+```
+Ko na veji main poženemo `git merge veja1`, dobimo konflikt:
+```
+Auto-merging moje_besedilo.txt
+CONFLICT (content): Merge conflict in moje_besedilo.txt
+Automatic merge failed; fix conflicts and then commit the result.
+```
+Če sedaj pogledamo v datoteko `moje_besedilo.txt`, bo izgledala nekako tako:
+```
+Pozdravljen, svet!
+<<<<<<< HEAD
+Algebre pa res ne maram. :(
+Ok no, recimo da ni tok slaba ;)
+=======
+Kako lepo vreme je danes! Kot nalašč za učenje algebre. :)
+>>>>>>> veja1
+```
+Vidimo, da nam je git označil kje so nastali konflikti. Tako se lahko odločimo, kaj želimo obdržati. Med HEAD in enačaji je besedilo, ki se nahaja na naši veji, pod enačaji in nad veja1 pa je kaj prihaja z druge veje. Popravimo besedilo na 
+```
+Pozdravljen, svet!
+Algebre pa res ne maram. :(
+Kako lepo vreme je danes! Kot nalašč za učenje algebre. :)
+```
+in poženemo `git commit -a -m "merged HEAD and veja1"`.
 ### rebase, cherry-pick
 
 ### Git v praksi
@@ -241,7 +280,7 @@ Na [povezavi](https://github.com/github/gitignore) so predloge za .gitignore dat
 
 ## Cheatsheet
 
-V tem razdelku se nahajajo najpogostejši ukazi, ki jih potrebujemo za git. Vse ukaze poženemo kot `git <command_name> -fl1 -fl2 -fl... --flag1 --flag2 --flag...`, kjer je `<command_name>` ime ukaza, `-fl#` je krajše ime za `--flag#`, ki predstavlja dodatne specifikacije za ukaz. Nekatere zastavice vzamejo tudi argumente, ki jih preprosto navedemo za imenom zastavice. Zastavice, ki so na voljo, lahko napišemo `git help <command>` in nam git izpiše vse kaj ukaz `command` zna.
+V tem razdelku se nahajajo najpogostejši ukazi, ki jih potrebujemo za git. Vse ukaze poženemo kot `git <command_name> -fl1 -fl2 -fl... --flag1 --flag2 --flag...`, kjer je `<command_name>` ime ukaza, `-fl#` je krajše ime za `--flag#`, ki predstavlja dodatne specifikacije za ukaz. Nekatere zastavice vzamejo tudi argumente, ki jih preprosto navedemo za imenom zastavice. Če želimo preveriti katere zastavice ukaz sprejme lahko poženemo `git help <command>` in nam git izpiše vse kaj ukaz `command` zna.
 
 ### Setup
 
