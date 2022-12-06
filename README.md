@@ -1,6 +1,6 @@
 # Računalniška delavnica - Git
 
-Ta repozitorij je namenjen računalniški delavnici 29. 11. 2022
+Ta repozitorij je namenjen računalniški delavnici 8. 12. 2022
 
 ## Splošno o gitu
 
@@ -84,7 +84,7 @@ Osnovni gradniki gita so torej commiti, saj so commiti tisto, kar beleži zgodov
 - hash commita
 - hash prejšnjega commita
 - sporočilo, ki ga zapišemo, ko ustvarimo commit
-- avtorja projekta (lastnik repozitorija)
+- avtorja kode (tistega, ki je kodo spisal)
 - committerja (tistega, ki je ustvaril commit)
 - drevo "blobov"
 
