@@ -49,6 +49,7 @@ class Main:
             pot = os.path.join("uporabniki", oseba_dat)
             with open(pot) as f:
                 for vr in f:
+                    # ime_u, geslo_u = "", ""
                     if vr.startswith("!"):
                         _, ime_u, geslo_u = vr.split()
                         uporabnik = Uporabnik(ime_u, geslo_u)
@@ -87,7 +88,13 @@ class Main:
         odjavi_gumb.pack()
         self.prijavljen_uporabnik.pack()
         
-    def dodaj_geslo(self, uporabnik, stran, ime, geslo):
+    def dodaj_geslo(self, stran, ime, geslo):
+        if not self.aktivni_uporabnik:
+            return
+        ime_u, geslo_u = self.aktivni_uporabnik.ime, self.aktivni_uporabnik.geslo
+        self.uporabniki[(ime_u, geslo_u)].append((stran, ime, geslo))
+
+    def zapisi_geslo(self):
         ...
 
     def registracija(self):
@@ -98,8 +105,6 @@ class Main:
 
     def odjava(self):
         ...
-
-
 
 okno = tk.Tk()
 Main(okno)
